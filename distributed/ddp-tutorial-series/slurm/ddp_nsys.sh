@@ -23,8 +23,8 @@
 #SBATCH --output=slurm-%j.out
 
 # ── Environment ───────────────────────────────────────────────────────────────
-module load GCC/13.4.0
-module load CUDA/12.9.1
+module load gcc/13.4.0
+module load cuda/12.9.1
 module load conda
 
 conda activate ${CONDA_ENV:?Set CONDA_ENV to your environment name}
