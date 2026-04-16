@@ -68,7 +68,11 @@ nsys profile \
             --total-epochs 5 \
             --warmup-epochs 2 \
             --batch-size 32 \
-            --num-workers 4
+            --num-workers 4 \
+            --d-model 1024 \
+            --n-heads 16 \
+            --n-layers 12 \
+            --seq-len 256
 
 echo "Profile written to: ${PROFILE_DIR}/ddp_${NGPUS}gpu_${SLURM_JOB_ID}.nsys-rep"
 echo "Open with: nsys-ui ${PROFILE_DIR}/ddp_${NGPUS}gpu_${SLURM_JOB_ID}.nsys-rep"
