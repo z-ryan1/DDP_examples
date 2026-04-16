@@ -58,7 +58,7 @@ nsys profile \
     --capture-range-end=stop \
     --force-overwrite=true \
     --trace-fork-before-exec=true \
-    -t cuda,nvtx,osrt,nccl,cublas,cudnn \
+    -t cuda,nvtx,osrt,cublas,cudnn \
     -o "${PROFILE_DIR}/ddp_${NGPUS}gpu_${SLURM_JOB_ID}" \
     torchrun \
         --nproc_per_node="${NGPUS}" \
@@ -82,7 +82,7 @@ echo "Open with: nsys-ui ${PROFILE_DIR}/ddp_${NGPUS}gpu_${SLURM_JOB_ID}.nsys-rep
 #     --capture-range-end=stop \
 #     --force-overwrite=true \
 #     --trace-fork-before-exec=true \
-#     -t cuda,nvtx,osrt,nccl,cublas,cudnn \
+#     -t cuda,nvtx,osrt,cublas,cudnn \
 #     -o "${PROFILE_DIR}/ddp_${NGPUS}gpu_nobucket_${SLURM_JOB_ID}" \
 #     torchrun \
 #         --nproc_per_node="${NGPUS}" \
