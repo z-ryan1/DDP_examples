@@ -27,7 +27,7 @@ module load conda
 
 conda activate ${CONDA_ENV:?Set CONDA_ENV to your environment name}
 
-SCRIPT_DIR="$(dirname "$(realpath "$0")")/.."
+SCRIPT_DIR="${SLURM_SUBMIT_DIR}"
 
 # ── Sanity check ──────────────────────────────────────────────────────────────
 echo "===== Environment ====="

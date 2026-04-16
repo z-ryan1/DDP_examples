@@ -27,7 +27,7 @@ conda activate ${CONDA_ENV:?Set CONDA_ENV to your environment name}
 PROFILE_DIR="/gpfs/scrubbed/${USER}/ddp_profiles"
 mkdir -p "${PROFILE_DIR}"
 
-SCRIPT_DIR="$(dirname "$(realpath "$0")")/.."
+SCRIPT_DIR="${SLURM_SUBMIT_DIR}"
 
 # ── Sanity check ──────────────────────────────────────────────────────────────
 echo "Job ID:      ${SLURM_JOB_ID}"
