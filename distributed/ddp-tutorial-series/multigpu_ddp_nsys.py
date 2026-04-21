@@ -15,7 +15,7 @@ compared side-by-side in the Nsight Systems UI.  The key thing to look for:
   nsys profile \\
       --capture-range=cudaProfilerApi \\
       --capture-range-end=stop \\
-      -t cuda,nvtx,osrt,nccl,cublas,cudnn \\
+      -t cuda,nvtx,osrt,cublas,cudnn \\
       --trace-fork-before-exec=true \\
       -o profiles/ddp_<N>gpu \\
       torchrun --nproc_per_node=<N> multigpu_ddp_nsys.py

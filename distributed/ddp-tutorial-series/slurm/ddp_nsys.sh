@@ -51,8 +51,9 @@ echo "Profile dir: ${PROFILE_DIR}"
 # ── Profile ───────────────────────────────────────────────────────────────────
 # --trace-fork-before-exec=true   follow the worker processes torchrun spawns;
 #                                  all ranks appear as separate rows in nsys-ui
-# -t ...,nccl                     traces NCCL so AllReduce calls are visible
-#                                  inside the 'backward' NVTX range
+# -t cuda,nvtx,...                 NCCL is not a valid -t flag on nsys 2025+;
+#                                  AllReduce is still visible as ncclKernel_*
+#                                  CUDA kernels on the default CUDA trace
 nsys profile \
     --capture-range=cudaProfilerApi \
     --capture-range-end=stop \
