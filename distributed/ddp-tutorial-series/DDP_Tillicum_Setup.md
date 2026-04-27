@@ -97,6 +97,7 @@ Profiles are written to `/gpfs/scrubbed/$USER/ddp_profiles/`.
 
 ## Step 5 — Download and open profiles
 
+Run this from your laptop.
 ```bash
 scp UWNetID@tillicum.hyak.uw.edu:/gpfs/scrubbed/$USER/ddp_profiles/*.nsys-rep ~/Downloads/
 
