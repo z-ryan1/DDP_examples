@@ -23,16 +23,15 @@ set -euo pipefail
 
 # ── Environment ───────────────────────────────────────────────────────────────
 module load py-pytorch/2.4.1_py312
-module load cuda/12.6.1
 
 SCRIPT_DIR="${SLURM_SUBMIT_DIR}"
 
 # ── Sanity check ──────────────────────────────────────────────────────────────
 echo "===== Environment ====="
 echo "Node:     ${SLURMD_NODENAME}"
-echo "GPU:      $(nvidia-smi --query-gpu=name --format=csv,noheader | head -1)"
 echo "PyTorch:  $(python3 -c 'import torch; print(torch.__version__)')"
 echo "CUDA:     $(python3 -c 'import torch; print(torch.version.cuda)')"
+echo "GPU:      $(python3 -c 'import torch; print(torch.cuda.get_device_name(0))')"
 echo ""
 
 # Remove stale snapshots — prevents shape mismatch if a previous run used a different model config
