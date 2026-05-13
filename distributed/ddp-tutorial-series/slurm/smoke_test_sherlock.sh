@@ -1,5 +1,4 @@
 #!/bin/bash
-set -euo pipefail
 # ──────────────────────────────────────────────────────────────────────────────
 # Smoke test — Sherlock (Stanford HPC)
 #
@@ -21,6 +20,8 @@ set -euo pipefail
 #SBATCH --mem=64G
 #SBATCH --time=00:30:00
 #SBATCH --output=slurm-%j.out
+
+set -euo pipefail
 
 # ── Environment ───────────────────────────────────────────────────────────────
 module load py-pytorch/2.4.1_py312
