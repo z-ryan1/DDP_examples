@@ -23,10 +23,10 @@ cd $SCRATCH/DDP_examples/distributed/ddp-tutorial-series
 
 ## Step 2 — Verify the environment (compute node)
 
-Request an interactive GPU session:
+`sh_dev` is Sherlock's shortcut for an interactive GPU session:
 
 ```bash
-salloc --partition=gpu --gres=gpu:1 --cpus-per-task=8 --mem=64G --time=00:30:00
+sh_dev -g 1 -c 8 -m 64G -p gpu
 ```
 
 Once your prompt changes to a compute node, run:

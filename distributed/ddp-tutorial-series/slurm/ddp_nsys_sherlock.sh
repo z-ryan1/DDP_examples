@@ -13,7 +13,8 @@
 #SBATCH --partition=gpu
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --gres=gpu:4               # default — overridden by submit_ddp_sherlock.sh
+#SBATCH --gpus=4                   # default — overridden by submit_ddp_sherlock.sh
+#SBATCH --constraint=GPU_GEN:HPR
 #SBATCH --cpus-per-task=32         # 8 CPUs per GPU × 4 — overridden by submit_ddp_sherlock.sh
 #SBATCH --mem=256G                 # 64 GB per GPU × 4 — overridden by submit_ddp_sherlock.sh
 #SBATCH --time=04:00:00

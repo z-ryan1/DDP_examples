@@ -27,7 +27,7 @@ SCRIPT_DIR="$(dirname "$(realpath "$0")")"
 echo "Submitting DDP profile job: ${NGPUS} GPU(s), ${CPUS} CPUs, ${MEM} RAM"
 
 sbatch \
-    --gres=gpu:"${NGPUS}" \
+    --gpus="${NGPUS}" \
     --cpus-per-task="${CPUS}" \
     --mem="${MEM}" \
     --export=ALL,NGPUS="${NGPUS}" \
