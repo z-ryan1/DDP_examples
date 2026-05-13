@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Multi-GPU DDP transformer training with Nsight Systems (nsys) profiling support.
 

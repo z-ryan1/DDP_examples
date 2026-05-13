@@ -10,24 +10,31 @@
 
 ## Step 1 — Connect and clone
 
+Clone into `$SCRATCH` — Sherlock recommends scratch for active work (`$HOME` has a 15 GB limit).
+
 ```bash
 ssh SUNetID@sherlock.stanford.edu
 
-git clone https://github.com/z-ryan1/DDP_examples.git
-cd DDP_examples/distributed/ddp-tutorial-series
+git clone https://github.com/z-ryan1/DDP_examples.git $SCRATCH/DDP_examples
+cd $SCRATCH/DDP_examples/distributed/ddp-tutorial-series
 ```
 
 ---
 
 ## Step 2 — Verify the environment (compute node)
 
+Request an interactive GPU session:
+
 ```bash
 salloc --partition=gpu --gres=gpu:1 --cpus-per-task=8 --mem=64G --time=00:30:00
+```
 
+Once your prompt changes to a compute node, run:
+
+```bash
 module load py-pytorch/2.4.1_py312
-python -c "import torch; print(torch.__version__); print(torch.cuda.is_available())"
+python3 -c "import torch; print(torch.__version__); print(torch.cuda.is_available())"
 # Expected: 2.4.1+cu... / True
-
 exit
 ```
 
@@ -35,21 +42,7 @@ exit
 
 ---
 
-## Step 3 — Smoke test
-
-Delete any stale snapshots, then submit:
-
-```bash
-rm -f snapshot_single.pt snapshot_ddp.pt
-
-sbatch slurm/smoke_test_sherlock.sh
-squeue -u $USER
-cat slurm-<jobid>.out    # confirm both tests show PASSED
-```
-
----
-
-## Step 4 — Submit profiling jobs
+## Step 3 — Submit profiling jobs
 
 ```bash
 ./slurm/submit_single_gpu_sherlock.sh
@@ -63,7 +56,7 @@ Profiles are written to `$SCRATCH/ddp_profiles/`.
 
 ---
 
-## Step 5 — Download and open profiles
+## Step 4 — Download and open profiles
 
 ```bash
 scp SUNetID@login.sherlock.stanford.edu:$SCRATCH/ddp_profiles/*.nsys-rep ~/Downloads/

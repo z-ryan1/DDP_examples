@@ -23,6 +23,7 @@ set -euo pipefail
 
 # ── Environment ───────────────────────────────────────────────────────────────
 module load py-pytorch/2.4.1_py312
+module load cuda/12.6.1
 
 SCRIPT_DIR="${SLURM_SUBMIT_DIR}"
 
@@ -30,8 +31,8 @@ SCRIPT_DIR="${SLURM_SUBMIT_DIR}"
 echo "===== Environment ====="
 echo "Node:     ${SLURMD_NODENAME}"
 echo "GPU:      $(nvidia-smi --query-gpu=name --format=csv,noheader | head -1)"
-echo "PyTorch:  $(python -c 'import torch; print(torch.__version__)')"
-echo "CUDA:     $(python -c 'import torch; print(torch.version.cuda)')"
+echo "PyTorch:  $(python3 -c 'import torch; print(torch.__version__)')"
+echo "CUDA:     $(python3 -c 'import torch; print(torch.version.cuda)')"
 echo ""
 
 # Remove stale snapshots — prevents shape mismatch if a previous run used a different model config
@@ -53,7 +54,7 @@ TINY_ARGS=(
 
 # ── Test 1: single GPU ────────────────────────────────────────────────────────
 echo "===== Test 1: single_gpu_nsys.py ====="
-python "${SCRIPT_DIR}/single_gpu_nsys.py" "${TINY_ARGS[@]}"
+python3 "${SCRIPT_DIR}/single_gpu_nsys.py" "${TINY_ARGS[@]}"
 echo "PASSED"
 echo ""
 

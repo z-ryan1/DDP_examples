@@ -31,7 +31,7 @@ echo "Job ID:      ${SLURM_JOB_ID}"
 echo "Node:        ${SLURMD_NODENAME}"
 echo "GPU:         $(nvidia-smi --query-gpu=name --format=csv,noheader | head -1)"
 echo "nsys:        $(nsys --version 2>&1 | head -1)"
-echo "PyTorch:     $(python -c 'import torch; print(torch.__version__)')"
+echo "PyTorch:     $(python3 -c 'import torch; print(torch.__version__)')"
 echo "Profile dir: ${PROFILE_DIR}"
 
 # ── Profile ───────────────────────────────────────────────────────────────────
@@ -41,7 +41,7 @@ nsys profile \
     --force-overwrite=true \
     -t cuda,nvtx,osrt,cudnn,cublas \
     -o "${PROFILE_DIR}/single_gpu_${SLURM_JOB_ID}" \
-    python "${SCRIPT_DIR}/single_gpu_nsys.py" \
+    python3 "${SCRIPT_DIR}/single_gpu_nsys.py" \
         --total-epochs 5 \
         --warmup-epochs 2 \
         --batch-size 32 \

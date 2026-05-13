@@ -37,7 +37,7 @@ echo "Node:        ${SLURMD_NODENAME}"
 echo "GPUs:        ${NGPUS}"
 nvidia-smi --query-gpu=index,name,memory.total --format=csv,noheader
 echo "nsys:        $(nsys --version 2>&1 | head -1)"
-echo "PyTorch:     $(python -c 'import torch; print(torch.__version__)')"
+echo "PyTorch:     $(python3 -c 'import torch; print(torch.__version__)')"
 echo "Profile dir: ${PROFILE_DIR}"
 
 # ── Profile ───────────────────────────────────────────────────────────────────

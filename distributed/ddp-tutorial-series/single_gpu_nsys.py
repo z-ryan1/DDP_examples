@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Single-GPU transformer training with Nsight Systems (nsys) profiling support.
 
