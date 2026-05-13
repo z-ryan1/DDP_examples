@@ -14,7 +14,6 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --gpus=4                   # default — overridden by submit_ddp_sherlock.sh
-#SBATCH --constraint=GPU_GEN:HPR
 #SBATCH --cpus-per-task=32         # 8 CPUs per GPU × 4 — overridden by submit_ddp_sherlock.sh
 #SBATCH --mem=256G                 # 64 GB per GPU × 4 — overridden by submit_ddp_sherlock.sh
 #SBATCH --time=04:00:00
@@ -36,7 +35,7 @@ SCRIPT_DIR="${SLURM_SUBMIT_DIR}"
 echo "Job ID:      ${SLURM_JOB_ID}"
 echo "Node:        ${SLURMD_NODENAME}"
 echo "GPUs:        ${NGPUS}"
-nvidia-smi --query-gpu=index,name,memory.total --format=csv,noheader
+echo "GPU:         $(python3 -c 'import torch; print(torch.cuda.get_device_name(0))')"
 echo "nsys:        $(nsys --version 2>&1 | head -1)"
 echo "PyTorch:     $(python3 -c 'import torch; print(torch.__version__)')"
 echo "Profile dir: ${PROFILE_DIR}"

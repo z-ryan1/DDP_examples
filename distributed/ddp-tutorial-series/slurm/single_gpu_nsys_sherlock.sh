@@ -11,7 +11,6 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --gpus=1
-#SBATCH --constraint=GPU_GEN:HPR
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=64G
 #SBATCH --time=01:00:00
@@ -30,7 +29,7 @@ SCRIPT_DIR="${SLURM_SUBMIT_DIR}"
 # ── Sanity check ──────────────────────────────────────────────────────────────
 echo "Job ID:      ${SLURM_JOB_ID}"
 echo "Node:        ${SLURMD_NODENAME}"
-echo "GPU:         $(nvidia-smi --query-gpu=name --format=csv,noheader | head -1)"
+echo "GPU:         $(python3 -c 'import torch; print(torch.cuda.get_device_name(0))')"
 echo "nsys:        $(nsys --version 2>&1 | head -1)"
 echo "PyTorch:     $(python3 -c 'import torch; print(torch.__version__)')"
 echo "Profile dir: ${PROFILE_DIR}"
