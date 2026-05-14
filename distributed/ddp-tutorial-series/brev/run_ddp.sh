@@ -13,7 +13,7 @@ fi
 
 NGPUS=${1:-$(python3 -c 'import torch; print(torch.cuda.device_count())')}
 SCRIPT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-PROFILE_DIR="${HOME}/ddp_profiles"
+PROFILE_DIR="${HOME}/verb-workspace/ddp_profiles"
 mkdir -p "${PROFILE_DIR}"
 
 echo "GPUs:        ${NGPUS}"

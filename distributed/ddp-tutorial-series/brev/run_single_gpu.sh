@@ -12,7 +12,7 @@ if ! command -v nsys >/dev/null 2>&1; then
 fi
 
 SCRIPT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-PROFILE_DIR="${HOME}/ddp_profiles"
+PROFILE_DIR="${HOME}/verb-workspace/ddp_profiles"
 mkdir -p "${PROFILE_DIR}"
 
 echo "GPU:         $(python3 -c 'import torch; print(torch.cuda.get_device_name(0))')"
