@@ -183,13 +183,14 @@ def main(args):
         sampler=DistributedSampler(dataset),
     )
 
+    local_rank = int(os.environ["LOCAL_RANK"])
     model = SmallTransformer(
         vocab_size=args.vocab_size,
         d_model=args.d_model,
         n_heads=args.n_heads,
         n_layers=args.n_layers,
         seq_len=args.seq_len,
-    )
+    ).to(local_rank)
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr, fused=True)
 
     trainer = Trainer(

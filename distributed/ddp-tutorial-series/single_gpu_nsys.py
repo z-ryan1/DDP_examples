@@ -149,7 +149,7 @@ def main(args):
         n_heads=args.n_heads,
         n_layers=args.n_layers,
         seq_len=args.seq_len,
-    )
+    ).cuda()
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr, fused=True)
 
     trainer = Trainer(
