@@ -68,7 +68,7 @@ class Trainer:
         self.warmup_epochs = warmup_epochs
         self.snapshot_path = snapshot_path
         self.epochs_run = 0
-        self.scaler = torch.amp.GradScaler("cuda")
+        self.scaler = torch.cuda.amp.GradScaler()
 
         if os.path.exists(snapshot_path):
             self._load_snapshot(snapshot_path)
