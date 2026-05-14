@@ -39,6 +39,8 @@ apptainer exec --nv "${SIF}" python3 -c \
 apptainer exec --nv "${SIF}" bash -c 'echo "nsys:        $(nsys --version 2>&1 | head -1)"'
 echo "Profile dir: ${PROFILE_DIR}"
 
+rm -f "${SCRIPT_DIR}/snapshot_ddp.pt"
+
 # ── Profile ───────────────────────────────────────────────────────────────────
 # --trace-fork-before-exec=true   follow worker processes torchrun spawns;
 #                                  all ranks appear as separate rows in nsys-ui

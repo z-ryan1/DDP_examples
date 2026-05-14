@@ -36,6 +36,8 @@ apptainer exec --nv "${SIF}" python3 -c \
 apptainer exec --nv "${SIF}" bash -c 'echo "nsys:        $(nsys --version 2>&1 | head -1)"'
 echo "Profile dir: ${PROFILE_DIR}"
 
+rm -f "${SCRIPT_DIR}/snapshot_single.pt"
+
 # ── Profile ───────────────────────────────────────────────────────────────────
 apptainer exec --nv "${SIF}" \
     nsys profile \
