@@ -17,6 +17,8 @@ echo "nsys:        $(nsys --version 2>&1 | head -1)"
 echo "PyTorch:     $(python3 -c 'import torch; print(torch.__version__)')"
 echo "Profile dir: ${PROFILE_DIR}"
 
+rm -f "${SCRIPT_DIR}/snapshot_ddp.pt"
+
 OUTPUT="${PROFILE_DIR}/ddp_${NGPUS}gpu_$(date +%Y%m%d_%H%M%S)"
 
 nsys profile \

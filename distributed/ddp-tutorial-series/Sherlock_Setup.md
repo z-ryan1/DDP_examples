@@ -1,8 +1,12 @@
 # DDP Profiling with Nsight Systems on Sherlock
 
+Uses Apptainer + NGC PyTorch container on the `serc` partition. The container
+ships with PyTorch and `nsys` pre-installed, sidestepping module compatibility
+issues between `gpu` and `serc` partitions.
+
 ## Prerequisites
 
-- Sherlock access (Stanford SUNet ID)
+- Sherlock access with `serc` partition membership (Stanford SUNet ID)
 - [NVIDIA Nsight Systems](https://developer.nvidia.com/nsight-systems) installed
   locally to view `.nsys-rep` profile files
 
@@ -21,31 +25,15 @@ cd $SCRATCH/DDP_examples/distributed/ddp-tutorial-series
 
 ---
 
-## Step 2 — Verify the environment (compute node)
+## Step 2 — Submit jobs
 
-`sh_dev` is Sherlock's shortcut for an interactive GPU session:
-
-```bash
-sh_dev -g 1 -c 8 -m 64G -p gpu
-```
-
-Once your prompt changes to a compute node, run:
+The first job to run will pull the NGC PyTorch container (~8 GB) to
+`$SCRATCH/pytorch-24.10.sif`. Subsequent jobs reuse it.
 
 ```bash
-module load py-pytorch/2.4.1_py312
-python3 -c "import torch; print(torch.__version__); print(torch.cuda.is_available())"
-# Expected: 2.4.1+cu... / True
-exit
-```
+sbatch slurm/smoke_test_sherlock.sh
 
-> No environment setup needed — Sherlock provides a pre-built PyTorch module.
-
----
-
-## Step 3 — Submit profiling jobs
-
-```bash
-./slurm/submit_single_gpu_sherlock.sh
+sbatch slurm/single_gpu_nsys_sherlock.sh
 
 ./slurm/submit_ddp_sherlock.sh 2
 ./slurm/submit_ddp_sherlock.sh 4
@@ -56,7 +44,7 @@ Profiles are written to `$SCRATCH/ddp_profiles/`.
 
 ---
 
-## Step 4 — Download and open profiles
+## Step 3 — Download and open profiles
 
 ```bash
 scp SUNetID@login.sherlock.stanford.edu:$SCRATCH/ddp_profiles/*.nsys-rep ~/Downloads/

@@ -1,17 +1,15 @@
 #!/bin/bash
 # ──────────────────────────────────────────────────────────────────────────────
-# Smoke test — Sherlock (Stanford HPC)
+# Smoke test — Sherlock (Stanford HPC), serc partition via Apptainer
 #
 # Runs both training scripts with a tiny model and dataset to confirm the
-# environment is correct before submitting a full profiling job.
-# No nsys — just checks that the Python code executes without error.
+# container + GPU access work before submitting a full profiling job.
 #
-# Partition: gpu  (1 GPU, 30 min)
 # Submit:  sbatch slurm/smoke_test_sherlock.sh
 # ──────────────────────────────────────────────────────────────────────────────
 
 #SBATCH --job-name=ddp-smoke
-#SBATCH --partition=gpu
+#SBATCH --partition=serc
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --gpus=1
@@ -22,23 +20,24 @@
 
 set -euo pipefail
 
-# ── Environment ───────────────────────────────────────────────────────────────
-module load py-pytorch/2.4.1_py312
-
 SCRIPT_DIR="${SLURM_SUBMIT_DIR}"
+SIF="${SCRATCH}/pytorch-24.10.sif"
+
+# ── Pull container once (idempotent) ──────────────────────────────────────────
+if [ ! -f "${SIF}" ]; then
+    echo "Pulling NGC PyTorch container to ${SIF}..."
+    apptainer pull "${SIF}" docker://nvcr.io/nvidia/pytorch:24.10-py3
+fi
 
 # ── Sanity check ──────────────────────────────────────────────────────────────
 echo "===== Environment ====="
 echo "Node:     ${SLURMD_NODENAME}"
-echo "PyTorch:  $(python3 -c 'import torch; print(torch.__version__)')"
-echo "CUDA:     $(python3 -c 'import torch; print(torch.version.cuda)')"
-echo "GPU:      $(python3 -c 'import torch; print(torch.cuda.get_device_name(0))')"
+apptainer exec --nv "${SIF}" python3 -c \
+    'import torch; print(f"PyTorch:  {torch.__version__}"); print(f"CUDA:     {torch.version.cuda}"); print(f"GPU:      {torch.cuda.get_device_name(0)}")'
 echo ""
 
-# Remove stale snapshots — prevents shape mismatch if a previous run used a different model config
 rm -f "${SCRIPT_DIR}/snapshot_single.pt" "${SCRIPT_DIR}/snapshot_ddp.pt"
 
-# Tiny config — fast to run, exercises the full code path
 TINY_ARGS=(
     --total-epochs 2
     --warmup-epochs 1
@@ -48,23 +47,25 @@ TINY_ARGS=(
     --n-heads 4
     --n-layers 2
     --seq-len 32
-    --num-workers 0      # avoid DataLoader worker issues in smoke test
-    --save-every 999     # suppress checkpoint writes
+    --num-workers 0
+    --save-every 999
 )
 
 # ── Test 1: single GPU ────────────────────────────────────────────────────────
 echo "===== Test 1: single_gpu_nsys.py ====="
-python3 "${SCRIPT_DIR}/single_gpu_nsys.py" "${TINY_ARGS[@]}"
+apptainer exec --nv "${SIF}" \
+    python3 "${SCRIPT_DIR}/single_gpu_nsys.py" "${TINY_ARGS[@]}"
 echo "PASSED"
 echo ""
 
-# ── Test 2: DDP via torchrun (still 1 GPU — tests the full DDP code path) ────
+# ── Test 2: DDP via torchrun (1 GPU — tests the full DDP code path) ──────────
 echo "===== Test 2: multigpu_ddp_nsys.py (1 GPU via torchrun) ====="
-torchrun \
-    --nproc_per_node=1 \
-    --rdzv-backend=c10d \
-    --rdzv-endpoint=127.0.0.1:29500 \
-    "${SCRIPT_DIR}/multigpu_ddp_nsys.py" "${TINY_ARGS[@]}"
+apptainer exec --nv "${SIF}" \
+    torchrun \
+        --nproc_per_node=1 \
+        --rdzv-backend=c10d \
+        --rdzv-endpoint=127.0.0.1:29500 \
+        "${SCRIPT_DIR}/multigpu_ddp_nsys.py" "${TINY_ARGS[@]}"
 echo "PASSED"
 echo ""
 
