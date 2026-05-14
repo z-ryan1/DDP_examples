@@ -7,6 +7,8 @@
 
 set -euo pipefail
 
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cu126
+
 mkdir -p "${HOME}/ddp_profiles"
 
 WORKDIR="$(cd "$(dirname "$0")/../.." && pwd)"
