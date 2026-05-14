@@ -6,6 +6,11 @@
 
 set -euo pipefail
 
+if ! command -v nsys >/dev/null 2>&1; then
+    echo "Installing nsys..."
+    apt-get update -qq && apt-get install -y --no-install-recommends cuda-nsight-systems-12-1
+fi
+
 SCRIPT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 PROFILE_DIR="${HOME}/ddp_profiles"
 mkdir -p "${PROFILE_DIR}"
