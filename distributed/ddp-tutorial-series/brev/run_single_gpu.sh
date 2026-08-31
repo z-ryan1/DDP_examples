@@ -12,6 +12,11 @@ if ! command -v nsys >/dev/null 2>&1; then
     exit 1
 fi
 
+if ! python3 -c 'import torch' >/dev/null 2>&1; then
+    echo "PyTorch not found. Run: bash .brev/setup.sh"
+    exit 1
+fi
+
 SCRIPT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 PROFILE_DIR="${HOME}/ddp_profiles"
 mkdir -p "${PROFILE_DIR}"

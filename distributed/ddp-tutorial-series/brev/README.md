@@ -18,6 +18,9 @@ The launchable uses `nvcr.io/nvidia/pytorch:24.10-py3`, which includes:
 - Nsight Systems (`nsys`)
 - NCCL and `torchrun`
 
+If the selected image does not already include PyTorch, `.brev/setup.sh`
+installs a CUDA-enabled PyTorch wheel.
+
 Once the instance is running, open a terminal.
 
 ---

@@ -12,6 +12,11 @@ if ! command -v nsys >/dev/null 2>&1; then
     exit 1
 fi
 
+if ! python3 -c 'import torch' >/dev/null 2>&1; then
+    echo "PyTorch not found. Run: bash .brev/setup.sh"
+    exit 1
+fi
+
 AVAILABLE_GPUS=$(python3 -c 'import torch; print(torch.cuda.device_count())')
 NGPUS=${1:-${AVAILABLE_GPUS}}
 

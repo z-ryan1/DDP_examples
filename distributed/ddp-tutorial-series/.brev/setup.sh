@@ -9,6 +9,12 @@ if ! command -v nsys >/dev/null 2>&1; then
     apt-get install -y --no-install-recommends cuda-nsight-systems-12-1
 fi
 
+if ! python3 -c 'import torch' >/dev/null 2>&1; then
+    python3 -m pip install --upgrade pip
+    python3 -m pip install numpy
+    python3 -m pip install torch --index-url https://download.pytorch.org/whl/cu124
+fi
+
 mkdir -p "${HOME}/ddp_profiles"
 
 echo "Setup complete."
