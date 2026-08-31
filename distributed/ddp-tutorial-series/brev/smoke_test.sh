@@ -1,16 +1,23 @@
 #!/bin/bash
-# Quick sanity check — tiny model, no nsys.
-# Run from the ddp-tutorial-series directory:
-#   bash brev/smoke_test.sh
+# ──────────────────────────────────────────────────────────────────────────────
+# Smoke test — Brev L40S 2-GPU instance
+#
+# Runs both training scripts with a tiny model and dataset before profiling.
+#
+# Submit:  bash brev/smoke_test.sh
+# ──────────────────────────────────────────────────────────────────────────────
 
 set -euo pipefail
 
 if ! command -v nsys >/dev/null 2>&1; then
-    echo "Installing nsys..."
-    apt-get update -qq && apt-get install -y --no-install-recommends cuda-nsight-systems-12-1
+    echo "nsys not found. Run: bash .brev/setup.sh"
+    exit 1
 fi
 
 SCRIPT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+
+# ── Sanity check ──────────────────────────────────────────────────────────────
+python3 -c 'import torch; assert torch.cuda.device_count() >= 1, "No CUDA GPU visible"'
 
 echo "===== Environment ====="
 echo "PyTorch:  $(python3 -c 'import torch; print(torch.__version__)')"
@@ -22,6 +29,7 @@ echo ""
 
 rm -f "${SCRIPT_DIR}/snapshot_single.pt" "${SCRIPT_DIR}/snapshot_ddp.pt"
 
+# Tiny config — fast to run, exercises the full code path
 TINY_ARGS=(
     --total-epochs 2
     --warmup-epochs 1
@@ -31,20 +39,21 @@ TINY_ARGS=(
     --n-heads 4
     --n-layers 2
     --seq-len 32
-    --num-workers 0
-    --save-every 999
+    --num-workers 0      # avoid DataLoader worker issues in smoke test
+    --save-every 999     # suppress checkpoint writes
 )
 
+# ── Test 1: single GPU ────────────────────────────────────────────────────────
 echo "===== Test 1: single_gpu_nsys.py ====="
 python3 "${SCRIPT_DIR}/single_gpu_nsys.py" "${TINY_ARGS[@]}"
 echo "PASSED"
 echo ""
 
+# ── Test 2: DDP via torchrun (1 GPU) ──────────────────────────────────────────
 echo "===== Test 2: multigpu_ddp_nsys.py (1 GPU via torchrun) ====="
 torchrun \
+    --standalone \
     --nproc_per_node=1 \
-    --rdzv-backend=c10d \
-    --rdzv-endpoint=127.0.0.1:29500 \
     "${SCRIPT_DIR}/multigpu_ddp_nsys.py" "${TINY_ARGS[@]}"
 echo "PASSED"
 echo ""

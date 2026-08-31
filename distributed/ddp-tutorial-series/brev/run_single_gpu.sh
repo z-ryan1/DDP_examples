@@ -1,19 +1,23 @@
 #!/bin/bash
-# Single-GPU nsys baseline — Brev (direct, no SLURM)
+# ──────────────────────────────────────────────────────────────────────────────
+# Single-GPU nsys baseline — Brev L40S 2-GPU instance
 #
-# Run from the ddp-tutorial-series directory:
-#   bash brev/run_single_gpu.sh
+# Submit:  bash brev/run_single_gpu.sh
+# ──────────────────────────────────────────────────────────────────────────────
 
 set -euo pipefail
 
 if ! command -v nsys >/dev/null 2>&1; then
-    echo "Installing nsys..."
-    apt-get update -qq && apt-get install -y --no-install-recommends cuda-nsight-systems-12-1
+    echo "nsys not found. Run: bash .brev/setup.sh"
+    exit 1
 fi
 
 SCRIPT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-PROFILE_DIR="${HOME}/verb-workspace/ddp_profiles"
+PROFILE_DIR="${HOME}/ddp_profiles"
 mkdir -p "${PROFILE_DIR}"
+
+# ── Sanity check ──────────────────────────────────────────────────────────────
+python3 -c 'import torch; assert torch.cuda.device_count() >= 1, "No CUDA GPU visible"'
 
 echo "GPU:         $(python3 -c 'import torch; print(torch.cuda.get_device_name(0))')"
 echo "nsys:        $(nsys --version 2>&1 | head -1)"
@@ -24,6 +28,7 @@ rm -f "${SCRIPT_DIR}/snapshot_single.pt"
 
 OUTPUT="${PROFILE_DIR}/single_gpu_$(date +%Y%m%d_%H%M%S)"
 
+# ── Profile ──────────────────────────────────────────────────────────────────
 nsys profile \
     --capture-range=cudaProfilerApi \
     --capture-range-end=stop \

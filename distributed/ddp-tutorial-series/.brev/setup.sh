@@ -1,11 +1,13 @@
 #!/bin/bash
 # Brev launchable setup — runs inside the container on first launch.
-# Base image: Pytorch Devel (PyTorch 2.2, CUDA 12.1, cuDNN 8)
+# Base image: nvcr.io/nvidia/pytorch:24.10-py3
 
 set -euo pipefail
 
-apt-get update -qq
-apt-get install -y --no-install-recommends cuda-nsight-systems-12-1
+if ! command -v nsys >/dev/null 2>&1; then
+    apt-get update -qq
+    apt-get install -y --no-install-recommends cuda-nsight-systems-12-1
+fi
 
 mkdir -p "${HOME}/ddp_profiles"
 
