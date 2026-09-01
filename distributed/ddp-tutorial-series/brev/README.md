@@ -25,22 +25,24 @@ Once the instance is running, open a terminal.
 
 ---
 
-## Step 2 — Set up the repo
+## Step 2 — Run setup
 
-The `.brev/setup.sh` script runs automatically when the instance starts. If you
-need to run it manually:
-
-```bash
-bash .brev/setup.sh
-```
-
-Navigate to the workshop directory:
+Once the instance is running, open a terminal and go to the workshop directory:
 
 ```bash
 cd ~/DDP_examples/distributed/ddp-tutorial-series
 ```
 
-Run the smoke test:
+Run the Brev setup script:
+
+```bash
+bash .brev/setup.sh
+```
+
+This installs or verifies Nsight Systems and PyTorch, then creates the profile
+output directory.
+
+Run the smoke test before profiling:
 
 ```bash
 bash brev/smoke_test.sh
@@ -81,16 +83,15 @@ Profiles are written to:
 
 ## Step 4 — Download and open profiles
 
-In a local terminal:
+In Jupyter, open the file browser and go to:
 
-```bash
-scp -i ~/.ssh/brev <instance-user>@<instance-ip>:~/ddp_profiles/*.nsys-rep ~/Downloads/
-
-nsys-ui ~/Downloads/<profile>.nsys-rep
+```text
+/home/ubuntu/ddp_profiles
 ```
 
-The instance IP and SSH key path are shown in the Brev dashboard under
-**Connect**.
+Right-click the `.nsys-rep` files and select **Download**.
+
+Open the downloaded files locally with NVIDIA Nsight Systems.
 
 ---
 
@@ -100,6 +101,3 @@ The instance IP and SSH key path are shown in the Brev dashboard under
 - 2-GPU DDP: two worker processes, one per L40S
 - NVTX ranges: `forward`, `loss`, `backward`, `optimizer`
 - NCCL AllReduce kernels inside the `backward` range
-
-The L40S 2-GPU instance will not reproduce the full Tillicum 1/2/4/8 scaling
-study, but it is enough to show the DDP mechanics and NCCL overlap clearly.
